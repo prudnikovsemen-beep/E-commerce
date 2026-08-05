@@ -21,7 +21,7 @@ E‑commerce система на Python 3.12: модели товаров и к�
 - Poetry для управления зависимостями
 
 ### Установка зависимостей
-```bash
+
 poetry install
 
 ## Запуск проекта
@@ -42,16 +42,20 @@ poetry run mypy src
 
 
 ### Структура проекта
+```bash
+
 E-commerce/
-├── .venv/                 # Виртуальное окружение (исключено из git)
+├── .venv/ # Виртуальное окружение (исключено из git)
+├── htmlcov/ # Отчёт о покрытии тестами (index.html)
+│ └── index.html # HTML‑отчёт покрытия кода (98 %)
 ├── src/
-│   ├── __init__.py
-│   ├── models.py         # Классы Product и Category
-│   ├── json_loader.py    # Загрузка и валидация JSON
-│   └── main.py           # Точка входа
+│ ├── init.py
+│ ├── models.py # Классы Product и Category
+│ ├── json_loader.py # Загрузка и валидация JSON
+│ └── main.py # Точка входа, демонстрация работы
 ├── tests/
-│   ├── conftest.py       # Фикстуры pytest
-│   ├── test_json_loader.py
-│   └── test_models.py
-├── pyproject.toml        # Зависимости и настройки Poetry, flake8, mypy
-└── README.md             # Эта документация
+│ ├── conftest.py # Фикстуры pytest (сброс счётчиков)
+│ ├── test_json_loader.py
+│ └── test_models.py
+├── pyproject.toml # Зависимости Poetry, настройки flake8, mypy
+└── README.md # Документация проекта
