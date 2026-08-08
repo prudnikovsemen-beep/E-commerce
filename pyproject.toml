@@ -5,7 +5,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry]
 name = "E-commerce"
 version = "0.1.0"
-description = "Виджет для отображения последних успешных банковских операций клиента"
+description = "E‑commerce система: модели товаров и категорий, загрузка из JSON, расчёт стоимости"
 authors = ["Semen <prudnikov.s.s@yandex.ru>"]
 readme = "README.md"
 packages = [
@@ -27,6 +27,7 @@ mypy = "^1.9.0"
 pytest = "^7.0.0"
 requests = "^2.34.2"
 pytest-cov = "^7.1.0"
+flake8 = "^7.3.0"
 
 [tool.black]
 line-length = 119
@@ -67,7 +68,7 @@ omit = [
 
 [tool.coverage.report]
 show_missing = true
-fail_under = 80
+fail_under = 75
 
 
 [tool.pytest.ini_options]

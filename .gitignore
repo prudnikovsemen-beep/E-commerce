@@ -51,6 +51,5 @@ env/
 .Trashes
 ehthumbs.db
 Thumbs.db
-htmlcov/
 .coverage
 .env
