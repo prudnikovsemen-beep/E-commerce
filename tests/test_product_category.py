@@ -64,3 +64,21 @@ class TestCategory:
         p2 = Product("D", "Desc D", 400.0, 5)
         cat = Category("Phones", "All phones", [p1, p2])
         assert cat.product_count == 2
+
+def test_add_product_increments_class_counter():
+    Category.product_count_total = 0  # сброс счётчика
+    cat1 = Category("Phones", "All phones", [])
+    cat2 = Category("TVs", "All TVs", [])
+
+    p1 = Product("Phone A", "Nice phone", 1000.0, 1)
+    p2 = Product("TV A", "Big TV", 2000.0, 1)
+
+    cat1.add_product(p1)
+    assert Category.get_total_product_count() == 1
+
+    cat2.add_product(p2)
+    assert Category.get_total_product_count() == 2
+
+    # Ещё одно добавление
+    cat1.add_product(Product("Phone B", "Another phone", 1500.0, 1))
+    assert Category.get_total_product_count() == 3
