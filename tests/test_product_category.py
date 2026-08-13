@@ -24,13 +24,10 @@ class TestProduct:
         assert "Цена не должна быть нулевая или отрицательная" in captured.out
         assert p.price == old_price
 
-    def test_price_setter_negative_rejected(self, capsys):
+    def test_price_setter_negative_rejected(self):
         p = Product("Phone", "Nice", 1000.0, 1)
-        old_price = p.price
-        p.price = -100
-        captured = capsys.readouterr()
-        assert "Цена не должна быть нулевая или отрицательная" in captured.out
-        assert p.price == old_price
+        with pytest.raises(ValueError, match="Цена не может быть отрицательной"):
+            p.price = -100
 
     def test_new_product_class_method(self):
         data: dict[str, float | int | str] = {
@@ -65,8 +62,11 @@ class TestCategory:
         cat = Category("Phones", "All phones", [p1, p2])
         assert cat.product_count == 2
 
+
 def test_add_product_increments_class_counter():
-    Category.product_count_total = 0  # сброс счётчика
+    # Сбрасываем реальный счётчик
+    Category._total_product_count = 0
+
     cat1 = Category("Phones", "All phones", [])
     cat2 = Category("TVs", "All TVs", [])
 
@@ -79,6 +79,5 @@ def test_add_product_increments_class_counter():
     cat2.add_product(p2)
     assert Category.get_total_product_count() == 2
 
-    # Ещё одно добавление
     cat1.add_product(Product("Phone B", "Another phone", 1500.0, 1))
     assert Category.get_total_product_count() == 3

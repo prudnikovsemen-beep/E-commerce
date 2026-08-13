@@ -12,16 +12,14 @@ def sample_json_path(tmp_path):
             "description": "Мобильные устройства",
             "products": [
                 {"name": "Samsung Galaxy S23 Ultra", "description": "256GB", "price": 180000.0, "quantity": 5},
-                {"name": "Iphone 15", "description": "512GB", "price": 210000.0, "quantity": 8}
-            ]
+                {"name": "Iphone 15", "description": "512GB", "price": 210000.0, "quantity": 8},
+            ],
         },
         {
             "name": "Телевизоры",
             "description": "Домашний просмотр",
-            "products": [
-                {"name": "55\" QLED 4K", "description": "Подсветка", "price": 123000.0, "quantity": 7}
-            ]
-        }
+            "products": [{"name": '55" QLED 4K', "description": "Подсветка", "price": 123000.0, "quantity": 7}],
+        },
     ]
     path = tmp_path / "products.json"
     path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -70,13 +68,7 @@ def test_load_categories_from_json_invalid_structure(tmp_path):
 
 
 def test_load_categories_from_json_category_without_products(tmp_path):
-    data = [
-        {
-            "name": "Пустая категория",
-            "description": "Нет товаров",
-            "products": []
-        }
-    ]
+    data = [{"name": "Пустая категория", "description": "Нет товаров", "products": []}]
     path = tmp_path / "no_products.json"
     path.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
 
@@ -90,9 +82,7 @@ def test_load_categories_from_json_category_without_products(tmp_path):
 
 def test_load_categories_from_json_skips_malformed_entries(tmp_path):
     data = [
-        {"name": "Нормальная категория", "products": [
-            {"name": "Товар", "price": 100, "quantity": 1}
-        ]},
+        {"name": "Нормальная категория", "products": [{"name": "Товар", "price": 100, "quantity": 1}]},
         {"products": []},  # нет name → будет пропущен
         "это не словарь",  # вообще не dict → будет пропущен
         {
@@ -100,8 +90,8 @@ def test_load_categories_from_json_skips_malformed_entries(tmp_path):
             "products": [
                 {"price": 100, "quantity": 1},  # нет name у товара → будет пропущен
                 {"name": "Хороший товар", "price": "не число", "quantity": 1},  # price не число → будет пропущен
-            ]
-        }
+            ],
+        },
     ]
     path = tmp_path / "malformed.json"
     path.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
