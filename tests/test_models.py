@@ -63,8 +63,8 @@ class TestCategory:
 
 
 def test_category_get_total_price():
-    p1 = Product("Товар 1", "Описание", 100.0, 2)   # 200 ₽
-    p2 = Product("Товар 2", "Описание", 200.0, 3)   # 600 ₽
+    p1 = Product("Товар 1", "Описание", 100.0, 2)  # 200 ₽
+    p2 = Product("Товар 2", "Описание", 200.0, 3)  # 600 ₽
     cat = Category("Электроника", "Товары", [p1, p2])
 
     assert cat.get_total_price() == 800.0

@@ -1,42 +1,40 @@
 from typing import List, Optional
+
 from .product import Product
 
 
 class Category:
-    # Класс-атрибут: общий счётчик всех добавленных товаров
-    product_count_total: int = 0
+    _total_product_count = 0
 
-    def __init__(self, name: str, description: str, products: Optional[List[Product]] = None) -> None:
+    def __init__(self, name: str, description: str, products: Optional[List[Product]] = None):
         self.name = name
         self.description = description
-        self.__products: List[Product] = []
-        if products:
-            for p in products:
-                # При инициализации тоже считаем добавления
-                self.add_product(p)
+        # Инициализируем список товаров, но НЕ трогаем счётчик!
+        self.__products: List[Product] = list(products) if products else []
+        # ❌ НИКАКИХ строк вида Category._total_product_count += ... ЗДЕСЬ БЫТЬ НЕ ДОЛЖНО!
+
+    @property
+    def products(self) -> List[str]:
+        # Возвращаем строки для совместимости со старыми тестами
+        return [str(p) for p in self.__products]
+
+    def get_products_objects(self) -> List[Product]:
+        # Возвращаем объекты для main.py
+        return list(self.__products)
 
     def add_product(self, product: Product) -> None:
         self.__products.append(product)
-        # Вот эта строка была пропущена — увеличиваем общий счётчик
-        Category.product_count_total += 1
-
-    @property
-    def products(self) -> str:
-        lines: List[str] = []
-        for p in self.__products:
-            lines.append(f"{p.name}, {p.price} руб. Остаток: {p.quantity} шт.")
-        return "\n".join(lines)
+        # ✅ Увеличиваем счётчик ТОЛЬКО здесь
+        Category._total_product_count += 1
 
     @property
     def product_count(self) -> int:
-        """Количество товаров именно в этой категории."""
         return len(self.__products)
 
     @classmethod
     def get_total_product_count(cls) -> int:
-        """Возвращает общее количество добавленных товаров (по всем категориям)."""
-        return cls.product_count_total
+        return cls._total_product_count
 
-    def get_products_list(self) -> List[Product]:
-        """Вспомогательный метод для вывода (не нарушает инкапсуляцию)."""
-        return self.__products.copy()
+    def __str__(self) -> str:
+        total_qty = sum(p.quantity for p in self.__products)
+        return f"{self.name}, количество продуктов: {total_qty} шт."

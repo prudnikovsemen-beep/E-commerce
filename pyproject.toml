@@ -22,6 +22,7 @@ black = "^26.5.1"
 flake8 = "^7.0.0"
 isort = "^5.13.2"
 mypy = "^1.9.0"
+black = "^26.5.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.0.0"
@@ -53,10 +54,11 @@ exclude = [
 
 [tool.flake8]
 max-line-length = 119
-exclude = ["git", "__pycache__", "tests/", "venv/", "build/"]
+exclude = ["git", "__pycache__", "tests/", "venv/", "build/", ".env/", "Lib/site-packages"]
 ignore = ["E203", "W503"]
 extend-select = ["B,C,E,F,W,T4,B9"]
 per-file-ignores = "__init__.py:F401"
+
 
 [tool.coverage.run]
 source = ["src"]
