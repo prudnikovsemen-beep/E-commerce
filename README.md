@@ -24,6 +24,7 @@ poetry run pytest --cov=src
 poetry run flake8 src tests
 poetry run mypy src
 
+
 ### Структура проекта
 ```bash
 
