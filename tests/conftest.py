@@ -19,3 +19,10 @@ def sample_category() -> Category:
     cat.add_product(Product("Phone", "Смартфон", 200.0, 2))
     cat.add_product(Product("Tablet", "Планшет", 300.0, 1))
     return cat
+
+
+@pytest.fixture(autouse=True)
+def reset_category_counter():
+    """Сбрасывает глобальный счётчик товаров перед каждым тестом."""
+    Category.total_products_count = 0
+    yield

@@ -77,4 +77,3 @@ def test_add_product_increments_class_counter():
     category.add_product(product)
 
     assert Category.get_total_product_count() == 1
-
