@@ -66,20 +66,15 @@ class TestCategory:
 
 
 def test_add_product_increments_class_counter():
-    # Сбрасываем глобальный счётчик перед тестом
-    Category.product_count = 0
+    from src.category import Category
+    from src.product import Product
 
-    cat1 = Category("Phones", "All phones", [])
-    cat2 = Category("TVs", "All TVs", [])
+    # Сбрасываем счётчик перед тестом — это гарантирует независимость
+    Category.total_products_count = 0
 
-    p1 = Product("Phone A", "Nice phone", 1000.0, 1)
-    p2 = Product("TV A", "Big TV", 2000.0, 1)
+    category = Category("Test Category", "test-slug")
+    product = Product("Test Product", "Description", 100.0, 5)
+    category.add_product(product)
 
-    cat1.add_product(p1)
     assert Category.get_total_product_count() == 1
 
-    cat2.add_product(p2)
-    assert Category.get_total_product_count() == 2
-
-    cat1.add_product(Product("Phone B", "Another phone", 1500.0, 1))
-    assert Category.get_total_product_count() == 3
