@@ -1,5 +1,4 @@
-from typing import Any, Dict
-
+from typing import Any
 
 class Product:
     def __init__(self, name: str, description: str, price: float, quantity: int) -> None:
@@ -14,30 +13,81 @@ class Product:
 
     @price.setter
     def price(self, value: float) -> None:
-        # Для нуля: печатаем в консоль (чтобы тест увидел строку через capsys)
-        if value == 0:
-            print("Цена не должна быть нулевая или отрицательная")
-            return
-
-        # Для отрицательного: выбрасываем ошибку (чтобы тест поймал исключение)
         if value < 0:
             raise ValueError("Цена не может быть отрицательной")
-
         self.__price = value
 
-    def __str__(self) -> str:
-        return f"{self.name}, {self.__price} руб. Остаток: {self.quantity} шт."
+    def __add__(self, other: "Product") -> "Product":
+        if type(self) is not type(other):
+            raise TypeError("Можно складывать только товары одного типа")
+        # Создаём новый продукт с суммированными ценой и количеством
+        # Остальные атрибуты берём от первого объекта
+        return Product(
+            name=self.name,
+            description=self.description,
+            price=self.price + other.price,
+            quantity=self.quantity + other.quantity,
+        )
 
-    def __add__(self, other: "Product") -> float:
-        if not isinstance(other, Product):
-            return NotImplemented
-        return (self.__price * self.quantity) + (other.__price * other.quantity)
 
-    @classmethod
-    def new_product(cls, data: Dict[str, Any]) -> "Product":
-        return cls(
-            name=data["name"],
-            description=data["description"],
-            price=data["price"],
-            quantity=data["quantity"],
+class Smartphone(Product):
+    def __init__(
+        self,
+        name: str,
+        description: str,
+        price: float,
+        quantity: int,
+        efficiency: float,
+        model: str,
+        memory: int,
+        color: str,
+    ) -> None:
+        super().__init__(name, description, price, quantity)
+        self.efficiency = efficiency
+        self.model = model
+        self.memory = memory
+        self.color = color
+
+    def __add__(self, other: "Smartphone") -> "Smartphone":
+        if type(self) is not type(other):
+            raise TypeError("Можно складывать только смартфоны между собой")
+        return Smartphone(
+            name=self.name,
+            description=self.description,
+            price=self.price + other.price,
+            quantity=self.quantity + other.quantity,
+            efficiency=self.efficiency,          # можно усреднить или оставить как есть
+            model=self.model,
+            memory=self.memory,
+            color=self.color,
+        )
+
+
+class LawnGrass(Product):
+    def __init__(
+        self,
+        name: str,
+        description: str,
+        price: float,
+        quantity: int,
+        country: str,
+        germination_period: str,
+        color: str,
+    ) -> None:
+        super().__init__(name, description, price, quantity)
+        self.country = country
+        self.germination_period = germination_period
+        self.color = color
+
+    def __add__(self, other: "LawnGrass") -> "LawnGrass":
+        if type(self) is not type(other):
+            raise TypeError("Можно складывать только газонную траву между собой")
+        return LawnGrass(
+            name=self.name,
+            description=self.description,
+            price=self.price + other.price,
+            quantity=self.quantity + other.quantity,
+            country=self.country,
+            germination_period=self.germination_period,
+            color=self.color,
         )

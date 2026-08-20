@@ -38,3 +38,20 @@ class Category:
     def __str__(self) -> str:
         total_qty = sum(p.quantity for p in self.__products)
         return f"{self.name}, количество продуктов: {total_qty} шт."
+
+
+class Category:
+    product_count = 0
+
+    def __init__(self, name: str, description: str, products: list[Product]) -> None:
+        self.name = name
+        self.description = description
+        self.products: list[Product] = []
+        for p in products:
+            self.add_product(p)
+
+    def add_product(self, product: Any) -> None:
+        if not isinstance(product, Product):
+            raise TypeError("В категорию можно добавлять только объекты Product или его наследников")
+        self.products.append(product)
+        Category.product_count += 1
