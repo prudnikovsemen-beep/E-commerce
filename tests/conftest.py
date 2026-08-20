@@ -1,9 +1,8 @@
 import pytest
-from src.models import Category
-
+from src.category import Category
 
 @pytest.fixture(autouse=True)
-def reset_counters():
-    Category.category_count = 0
+def reset_category_counter():
+    """Сбрасывает глобальный счётчик перед каждым тестом."""
     Category.product_count = 0
     yield

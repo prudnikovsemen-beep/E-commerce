@@ -16,17 +16,14 @@ class TestProduct:
         p.price = 2000.0
         assert p.price == 2000.0
 
-    def test_price_setter_zero_rejected(self, capsys):
+    def test_price_setter_zero_rejected(self):
         p = Product("Phone", "Nice", 1000.0, 1)
-        old_price = p.price
-        p.price = 0
-        captured = capsys.readouterr()
-        assert "Цена не должна быть нулевая или отрицательная" in captured.out
-        assert p.price == old_price
+        with pytest.raises(ValueError, match="Цена не может быть нулевой или отрицательной"):
+            p.price = 0
 
     def test_price_setter_negative_rejected(self):
         p = Product("Phone", "Nice", 1000.0, 1)
-        with pytest.raises(ValueError, match="Цена не может быть отрицательной"):
+        with pytest.raises(ValueError, match="Цена не может быть нулевой или отрицательной"):
             p.price = -100
 
     def test_new_product_class_method(self):
@@ -49,12 +46,17 @@ class TestCategory:
         p1 = Product("A", "Desc A", 100.0, 2)
         cat = Category("Phones", "All phones", [])
         cat.add_product(p1)
-        assert "A, 100.0 руб. Остаток: 2 шт." in cat.products
+
+        # products — это список строк вида "Название, X руб. Остаток: Y шт."
+        assert len(cat.products) == 1
+        assert "A, 100.0 руб. Остаток: 2 шт." in cat.products[0]
 
     def test_products_property_returns_string(self):
         p1 = Product("B", "Desc B", 200.0, 3)
         cat = Category("Phones", "All phones", [p1])
-        assert "B, 200.0 руб. Остаток: 3 шт." in cat.products
+
+        assert len(cat.products) == 1
+        assert "B, 200.0 руб. Остаток: 3 шт." in cat.products[0]
 
     def test_product_count_property(self):
         p1 = Product("C", "Desc C", 300.0, 4)
@@ -64,8 +66,8 @@ class TestCategory:
 
 
 def test_add_product_increments_class_counter():
-    # Сбрасываем реальный счётчик
-    Category._total_product_count = 0
+    # Сбрасываем глобальный счётчик перед тестом
+    Category.product_count = 0
 
     cat1 = Category("Phones", "All phones", [])
     cat2 = Category("TVs", "All TVs", [])

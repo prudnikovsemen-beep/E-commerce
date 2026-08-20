@@ -1,57 +1,77 @@
-from typing import List, Optional
-
 from .product import Product
-
-
-class Category:
-    _total_product_count = 0
-
-    def __init__(self, name: str, description: str, products: Optional[List[Product]] = None):
-        self.name = name
-        self.description = description
-        # Инициализируем список товаров, но НЕ трогаем счётчик!
-        self.__products: List[Product] = list(products) if products else []
-        # ❌ НИКАКИХ строк вида Category._total_product_count += ... ЗДЕСЬ БЫТЬ НЕ ДОЛЖНО!
-
-    @property
-    def products(self) -> List[str]:
-        # Возвращаем строки для совместимости со старыми тестами
-        return [str(p) for p in self.__products]
-
-    def get_products_objects(self) -> List[Product]:
-        # Возвращаем объекты для main.py
-        return list(self.__products)
-
-    def add_product(self, product: Product) -> None:
-        self.__products.append(product)
-        # ✅ Увеличиваем счётчик ТОЛЬКО здесь
-        Category._total_product_count += 1
-
-    @property
-    def product_count(self) -> int:
-        return len(self.__products)
-
-    @classmethod
-    def get_total_product_count(cls) -> int:
-        return cls._total_product_count
-
-    def __str__(self) -> str:
-        total_qty = sum(p.quantity for p in self.__products)
-        return f"{self.name}, количество продуктов: {total_qty} шт."
 
 
 class Category:
     product_count = 0
 
-    def __init__(self, name: str, description: str, products: list[Product]) -> None:
+    def __init__(self, name: str, slug: str, products=None):
         self.name = name
-        self.description = description
-        self.products: list[Product] = []
-        for p in products:
-            self.add_product(p)
+        self.slug = slug
+        self._products = [] if products is None else list(products)
 
-    def add_product(self, product: Any) -> None:
+    @classmethod
+    def get_total_product_count(cls) -> int:
+        return cls.product_count
+
+    def add_product(self, product: Product) -> None:
         if not isinstance(product, Product):
-            raise TypeError("В категорию можно добавлять только объекты Product или его наследников")
-        self.products.append(product)
+            raise TypeError("Можно добавить только объект Product")
+        self._products.append(product)
         Category.product_count += 1
+
+    @property
+    def products(self):
+        return [str(p) for p in self._products]
+
+    @property
+    def product_count(self) -> int:
+        return len(self._products)
+
+    def total_price(self) -> float:
+        return sum(p.price for p in self._products)
+
+    # --- МАГИЧЕСКИЕ МЕТОДЫ (ОБЯЗАТЕЛЬНО ДОБАВЬ ЭТИ) ---
+
+    def __str__(self) -> str:
+        total_qty = sum(p.quantity for p in self._products)
+        return f"{self.name}, количество продуктов: {total_qty} шт."
+
+    def __len__(self):
+        """Возвращает количество товаров в категории (объектов Product)."""
+        return len(self._products)
+
+    def __contains__(self, item: Product) -> bool:
+        """Проверяет наличие товара в категории."""
+        return item in self._products
+
+    def __iter__(self):
+        """Позволяет перебирать товары."""
+        return iter(self._products)
+
+    def __str__(self) -> str:
+        total_qty = sum(p.quantity for p in self._products)
+        return f"{self.name}, количество продуктов: {total_qty} шт."
+
+    def __len__(self):
+        return len(self._products)
+
+    def __contains__(self, item: Product) -> bool:
+        # Критически важно: сравниваем сам объект
+        return item in self._products
+
+    def __iter__(self):
+        return iter(self._products)
+    # ... остальные методы ...
+
+    def __str__(self) -> str:
+        total_qty = sum(p.quantity for p in self._products)
+        return f"{self.name}, количество продуктов: {total_qty} шт."
+
+    def __len__(self) -> int:
+        return len(self._products)
+
+    def __contains__(self, item: Product) -> bool:
+        return item in self._products
+
+    def __iter__(self):
+        return iter(self._products)
