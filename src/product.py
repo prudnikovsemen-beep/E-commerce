@@ -1,12 +1,42 @@
+# src/product.py
+from abc import ABC, abstractmethod
 from typing import Any, Dict
 
 
-class Product:
-    def __init__(self, name: str, description: str, price: float, quantity: int) -> None:
+class LoggingMixin:
+    def __init__(self) -> None:
+        # Не принимаем args/kwargs, просто печатаем информацию об объекте,
+        # который уже инициализирован в Product.__init__
+        print(f"{self.__class__.__name__}({self.name!r})")
+
+
+class BaseProduct(ABC):
+    @abstractmethod
+    def get_total_price(self, quantity: int) -> float:
+        pass
+
+    @abstractmethod
+    def describe(self) -> str:
+        pass
+
+
+class Product(LoggingMixin, BaseProduct):
+    def __init__(
+        self,
+        name: str,
+        description: str,
+        price: float,
+        quantity: int,
+    ) -> None:
+        # 1. Сначала присваиваем атрибуты
         self.name = name
         self.description = description
         self.__price = price
         self.quantity = quantity
+
+        # 2. Потом вызываем super() — сработает LoggingMixin.__init__()
+        # Аргументы не передаём, потому что миксин их не ждёт
+        super().__init__()
 
     @property
     def price(self) -> float:
@@ -24,7 +54,6 @@ class Product:
     def __add__(self, other: "Product") -> "Product":
         if not isinstance(other, Product):
             return NotImplemented
-
         return Product(
             name=self.name,
             description=self.description,
@@ -41,69 +70,10 @@ class Product:
             quantity=data["quantity"],
         )
 
+    def get_total_price(self, quantity: int) -> float:
+        if quantity < 0 or quantity > self.quantity:
+            raise ValueError("Недопустимое количество товара.")
+        return self.price * quantity
 
-class Smartphone(Product):
-    def __init__(
-        self,
-        name: str,
-        description: str,
-        price: float,
-        quantity: int,
-        efficiency: float,
-        model: str,
-        memory: int,
-        color: str,
-    ) -> None:
-        super().__init__(name, description, price, quantity)
-        self.efficiency = efficiency
-        self.model = model
-        self.memory = memory
-        self.color = color
-
-    # ВАЖНО: сигнатура такая же, как в родителе!
-    def __add__(self, other: "Product") -> "Product":
-        if not isinstance(other, Smartphone):
-            return NotImplemented
-
-        return Smartphone(
-            name=self.name,
-            description=self.description,
-            price=self.price + other.price,
-            quantity=self.quantity + other.quantity,
-            efficiency=self.efficiency,
-            model=self.model,
-            memory=self.memory,
-            color=self.color,
-        )
-
-
-class LawnGrass(Product):
-    def __init__(
-        self,
-        name: str,
-        description: str,
-        price: float,
-        quantity: int,
-        country: str,
-        germination_period: str,
-        color: str,
-    ) -> None:
-        super().__init__(name, description, price, quantity)
-        self.country = country
-        self.germination_period = germination_period
-        self.color = color
-
-    # ВАЖНО: сигнатура такая же, как в родителе!
-    def __add__(self, other: "Product") -> "Product":
-        if not isinstance(other, LawnGrass):
-            return NotImplemented
-
-        return LawnGrass(
-            name=self.name,
-            description=self.description,
-            price=self.price + other.price,
-            quantity=self.quantity + other.quantity,
-            country=self.country,
-            germination_period=self.germination_period,
-            color=self.color,
-        )
+    def describe(self) -> str:
+        return f"{self.name}: {self.description}, цена {self.price}, в наличии {self.quantity}"
