@@ -1,5 +1,5 @@
-import pytest
 from src.lawn_grass import LawnGrass
+
 
 class TestLawnGrass:
     def test_initialization(self):

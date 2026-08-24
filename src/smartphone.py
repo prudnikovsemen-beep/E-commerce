@@ -20,7 +20,6 @@ class Smartphone(Product):
         self.memory = memory
         self.color = color
 
-
     def __add__(self, other: "Product") -> "Product":
         if not isinstance(other, Smartphone):
             return NotImplemented

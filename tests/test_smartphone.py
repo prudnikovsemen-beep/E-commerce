@@ -1,5 +1,5 @@
-import pytest
 from src.smartphone import Smartphone
+
 
 class TestSmartphone:
     def test_initialization(self):

@@ -1,13 +1,12 @@
-# src/product.py
 from abc import ABC, abstractmethod
 from typing import Any, Dict
 
 
 class LoggingMixin:
-    def __init__(self) -> None:
-        # Не принимаем args/kwargs, просто печатаем информацию об объекте,
-        # который уже инициализирован в Product.__init__
-        print(f"{self.__class__.__name__}({self.name!r})")
+    # Теперь миксин вообще не пытается читать self.name.
+    # Он просто печатает то, что ему передали.
+    def log_creation(self, name: str) -> None:
+        print(f"{self.__class__.__name__}({name!r})")
 
 
 class BaseProduct(ABC):
@@ -34,9 +33,8 @@ class Product(LoggingMixin, BaseProduct):
         self.__price = price
         self.quantity = quantity
 
-        # 2. Потом вызываем super() — сработает LoggingMixin.__init__()
-        # Аргументы не передаём, потому что миксин их не ждёт
-        super().__init__()
+        # 2. Теперь безопасно логируем, передавая имя явно
+        self.log_creation(name)
 
     @property
     def price(self) -> float:
