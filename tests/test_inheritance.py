@@ -1,5 +1,7 @@
 import pytest
-from src.product import Product, Smartphone, LawnGrass
+from src.product import Product
+from src.smartphone import Smartphone
+from src.lawn_grass import LawnGrass
 from src.category import Category
 
 
@@ -45,7 +47,6 @@ def test_add_same_type():
 
     assert result.price == s1.price + s2.price
     assert result.quantity == s1.quantity + s2.quantity
-    # Дополнительно: имя и описание берутся от первого объекта (по твоей реализации)
     assert result.name == s1.name
     assert result.description == s1.description
 
@@ -62,9 +63,10 @@ def test_category_add_valid_product():
     p = Product("Test", "Desc", 100, 5)
     cat.add_product(p)
 
-    # products возвращает список строк (результат str(product)), поэтому сравниваем со str(p)
+    # products — это список объектов Product, а не строк
     assert len(cat.products) == 1
-    assert cat.products[0] == str(p)
+    assert cat.products[0] is p  # проверяем, что это тот же самый объект
+    assert p in cat              # дополнительно проверяем через __contains__
 
 
 def test_category_add_invalid_object_raises_type_error():

@@ -1,3 +1,4 @@
+# tests/test_product_category.py
 import pytest
 from src.product import Product
 from src.category import Category
@@ -44,35 +45,36 @@ class TestProduct:
 class TestCategory:
     def test_add_product_to_category(self):
         p1 = Product("A", "Desc A", 100.0, 2)
+        # Конструктор теперь: (name, description, products)
         cat = Category("Phones", "All phones", [])
         cat.add_product(p1)
 
-        # products — это список строк вида "Название, X руб. Остаток: Y шт."
+        # products — это список объектов Product, а не строк
         assert len(cat.products) == 1
-        assert "A, 100.0 руб. Остаток: 2 шт." in cat.products[0]
+        assert cat.products[0] is p1
 
-    def test_products_property_returns_string(self):
+    def test_products_property_returns_objects(self):
         p1 = Product("B", "Desc B", 200.0, 3)
         cat = Category("Phones", "All phones", [p1])
 
         assert len(cat.products) == 1
-        assert "B, 200.0 руб. Остаток: 3 шт." in cat.products[0]
+        assert cat.products[0] is p1
+        # Если хочешь проверить строковое представление, используй str(p1), но не сравнивай с жёсткой строкой
+        assert cat.products[0].name == "B"
 
     def test_product_count_property(self):
         p1 = Product("C", "Desc C", 300.0, 4)
         p2 = Product("D", "Desc D", 400.0, 5)
         cat = Category("Phones", "All phones", [p1, p2])
+        # product_count — это property, который возвращает len(_products)
         assert cat.product_count == 2
 
 
 def test_add_product_increments_class_counter():
-    from src.category import Category
-    from src.product import Product
-
     # Сбрасываем счётчик перед тестом — это гарантирует независимость
-    Category.total_products_count = 0
+    Category.total_product_count = 0
 
-    category = Category("Test Category", "test-slug")
+    category = Category("Test Category", "Test description", [])
     product = Product("Test Product", "Description", 100.0, 5)
     category.add_product(product)
 

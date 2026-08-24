@@ -1,3 +1,4 @@
+# tests/test_product_category_magic.py
 import pytest
 from src.product import Product
 from src.category import Category
@@ -8,6 +9,7 @@ class TestCategoryMagicMethods:
     def category_with_products(self):
         p1 = Product("Phone", "Nice phone", 1000.0, 2)
         p2 = Product("Laptop", "Good laptop", 5000.0, 1)
+        # Конструктор: (name, description, products)
         return Category("Electronics", "electronics", [p1, p2])
 
     def test_str_representation(self, category_with_products):
