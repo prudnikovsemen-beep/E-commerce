@@ -3,8 +3,6 @@ from typing import Any, Dict
 
 
 class LoggingMixin:
-    # Теперь миксин вообще не пытается читать self.name.
-    # Он просто печатает то, что ему передали.
     def log_creation(self, name: str) -> None:
         print(f"{self.__class__.__name__}({name!r})")
 
@@ -27,13 +25,20 @@ class Product(LoggingMixin, BaseProduct):
         price: float,
         quantity: int,
     ) -> None:
-        # 1. Сначала присваиваем атрибуты
+        # 1. Сначала валидируем входные данные
+        if quantity <= 0:
+            raise ValueError("quantity должен быть больше 0")
+        if price <= 0:
+            # Можно добавить и сюда проверку цены при создании — это усилит защиту
+            raise ValueError("Цена должна быть больше 0")
+
+        # 2. Теперь безопасно присваиваем атрибуты
         self.name = name
         self.description = description
         self.__price = price
         self.quantity = quantity
 
-        # 2. Теперь безопасно логируем, передавая имя явно
+        # 3. Логируем создание
         self.log_creation(name)
 
     @property
